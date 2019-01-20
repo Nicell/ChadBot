@@ -1,0 +1,2 @@
+# ChadBot
+Discord Bot
