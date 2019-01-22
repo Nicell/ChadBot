@@ -10,3 +10,10 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# Media download folders
+downloads/
+library/
+
+# Config file
+config.json
