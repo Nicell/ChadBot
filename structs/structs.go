@@ -8,6 +8,7 @@ type Config struct {
 type QueueItem struct {
 	Title string
 	URL   string
+	User  string
 }
 
 type Guild struct {

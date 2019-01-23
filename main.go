@@ -130,15 +130,15 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "<@"+m.Author.ID+">, there is no music playing")
 	} else if tokens[0] == "!queue" {
 
-		if _, in := guilds[g.ID]; in && len(guilds[g.ID].Queue) > 1 {
+		if _, in := guilds[g.ID]; in && len(guilds[g.ID].Queue) > 0 {
 
 			embed := &discordgo.MessageEmbed{
 				Author: &discordgo.MessageEmbedAuthor{},
 				Color:  0x4caf50,
 				Fields: []*discordgo.MessageEmbedField{
 					&discordgo.MessageEmbedField{
-						Name:  "Now Playing",
-						Value: guilds[g.ID].Queue[0].Title,
+						Name:  "Now Playing: " + guilds[g.ID].Queue[0].Title,
+						Value: "By <@" + guilds[g.ID].Queue[0].User + ">",
 					},
 				},
 				Timestamp: time.Now().Format(time.RFC3339),
@@ -147,8 +147,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 			for i := 1; i < len(guilds[g.ID].Queue); i++ {
 				embed.Fields = append(embed.Fields, &discordgo.MessageEmbedField{
-					Name:  strconv.Itoa(i) + ".",
-					Value: guilds[g.ID].Queue[i].Title,
+					Name:  strconv.Itoa(i) + ". " + guilds[g.ID].Queue[i].Title,
+					Value: "By <@" + guilds[g.ID].Queue[i].User + ">",
 				})
 			}
 
@@ -223,7 +223,7 @@ func handlePlay(s *discordgo.Session, guildID, vcChannelID string, mChannelID st
 		}
 	}
 
-	guilds[guildID].Queue = append(guilds[guildID].Queue, S.QueueItem{Title: vid.Title, URL: link})
+	guilds[guildID].Queue = append(guilds[guildID].Queue, S.QueueItem{Title: vid.Title, URL: link, User: authorID})
 
 	s.ChannelMessageSend(mChannelID, "<@"+authorID+">, I added "+vid.Title+" to the queue")
 
