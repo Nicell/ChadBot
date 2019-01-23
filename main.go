@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"os/signal"
 	"strconv"
 	"strings"
@@ -228,96 +227,8 @@ func handlePlay(s *discordgo.Session, guildID, vcChannelID string, mChannelID st
 	s.ChannelMessageSend(mChannelID, "<@"+authorID+">, I added "+vid.Title+" to the queue")
 
 	if len(guilds[guildID].Queue) == 1 {
-		playQueue(s, guildID, vcChannelID, mChannelID)
+		M.PlyQ(s, guildID, vcChannelID, mChannelID, &guilds)
 	}
-
-	return nil
-}
-
-func playQueue(s *discordgo.Session, guildID, vcChannelID string, mChannelID string) error {
-
-	vc, err := s.ChannelVoiceJoin(guildID, vcChannelID, false, true)
-	if err != nil {
-		return err
-	}
-
-	voice, err := s.Channel(vcChannelID)
-	if err != nil {
-		return err
-	}
-
-	vc.Speaking(true)
-
-	for len(guilds[guildID].Queue) > 0 {
-		err = playNextSong(s, guildID, mChannelID, vc, voice)
-		if err != nil {
-			return err
-		}
-	}
-
-	vc.Speaking(false)
-
-	vc.Disconnect()
-
-	return nil
-}
-
-func playNextSong(s *discordgo.Session, guildID, mChannelID string, vc *discordgo.VoiceConnection, voice *discordgo.Channel) error {
-	vid, err := ytdl.GetVideoInfo(guilds[guildID].Queue[0].URL)
-	if err != nil {
-		s.ChannelMessageSend(mChannelID, "Failed to find the song!")
-		return err
-	}
-
-	dcaPath := "library/" + vid.ID + ".dca"
-
-	if _, err := os.Stat(dcaPath); os.IsNotExist(err) {
-
-		filePath := "downloads/" + vid.ID + ".webm"
-		file, _ := os.Create(filePath)
-		fileOut, _ := os.Create(dcaPath)
-		defer file.Close()
-		defer fileOut.Close()
-		vid.Download(vid.Formats.Best("audenc")[0], file)
-
-		cmd1 := exec.Command("ffmpeg", "-i", filePath, "-f", "s16le", "-ar", "48000", "-ac", "2", "pipe:1")
-		cmd2 := exec.Command("dca")
-
-		cmd2.Stdin, _ = cmd1.StdoutPipe()
-		cmd2.Stdout = fileOut
-
-		_ = cmd2.Start()
-		err = cmd1.Run()
-		err = cmd2.Wait()
-		if err != nil {
-			return err
-		}
-
-		file.Close()
-		os.Remove(filePath)
-	}
-
-	buffer, err := M.LdSnd(vid.ID)
-	if err != nil {
-		return err
-	}
-
-	s.ChannelMessageSend(mChannelID, "Now playing "+vid.Title+" in "+voice.Name)
-
-	for _, buff := range buffer {
-		for guilds[guildID].Pause {
-			if guilds[guildID].Skip {
-				break
-			}
-		}
-		if guilds[guildID].Skip {
-			guilds[guildID].Skip = false
-			break
-		}
-		vc.OpusSend <- buff
-	}
-
-	guilds[guildID].Queue = guilds[guildID].Queue[1:]
 
 	return nil
 }

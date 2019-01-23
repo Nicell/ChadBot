@@ -7,9 +7,7 @@ import (
 	"os"
 )
 
-func LdSnd(videoID string) ([][]byte, error) {
-
-	buffer := make([][]byte, 0)
+func LdSng(videoID string) (buffer [][]byte, err error) {
 
 	file, err := os.Open("library/" + videoID + ".dca")
 	if err != nil {
