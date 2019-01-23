@@ -9,6 +9,7 @@ import (
 	S "chad/structs"
 )
 
+// PlyNxt plays the next song in the given guild's queue
 func PlyNxt(s *discordgo.Session, guildID, mChannelID string, vc *discordgo.VoiceConnection, voice *discordgo.Channel, guilds *map[string]*S.Guild) (err error) {
 	vid, err := ytdl.GetVideoInfo((*guilds)[guildID].Queue[0].URL)
 	if err != nil {

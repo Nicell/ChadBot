@@ -7,6 +7,7 @@ import (
 	S "chad/structs"
 )
 
+// LdCFG loads config at config.json to the given config parameter
 func LdCFG(cfg *S.Config) error {
 
 	configFile, err := os.Open("config.json")

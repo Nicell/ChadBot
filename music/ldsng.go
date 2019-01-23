@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// LdSng loads the given video from a dca file and returns a buffer
 func LdSng(videoID string) (buffer [][]byte, err error) {
 
 	file, err := os.Open("library/" + videoID + ".dca")

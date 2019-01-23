@@ -7,6 +7,7 @@ import (
 	"github.com/rylio/ytdl"
 )
 
+// DlSng downloads the given video parameter and converts it to a dca file
 func DlSng(vid *ytdl.VideoInfo, dcaPath string) (err error) {
 
 	filePath := "downloads/" + vid.ID + ".webm"

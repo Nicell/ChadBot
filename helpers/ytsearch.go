@@ -8,6 +8,7 @@ import (
 	"google.golang.org/api/youtube/v3"
 )
 
+// YTsearch searches YouTube for the given query and returns the first result
 func YTsearch(query string, key string) (string, error) {
 
 	client := &http.Client{
