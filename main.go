@@ -12,9 +12,9 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/rylio/ytdl"
 
-	H "chad/helpers"
-	M "chad/music"
-	S "chad/structs"
+	H "chadbot/helpers"
+	M "chadbot/music"
+	S "chadbot/structs"
 )
 
 var guilds = make(map[string]*S.Guild, 0)
@@ -23,12 +23,14 @@ var cfg S.Config
 
 func main() {
 
-	err := H.LdCFG(&cfg)
-	if err != nil {
-		fmt.Println("Error parsing config: ", err)
+	cfg.Discord = os.Getenv("DISCORD")
+	cfg.Youtube = os.Getenv("YOUTUBE")
+
+	if cfg.Discord == "" || cfg.Youtube == "" {
+		fmt.Println("Error getting environment variables (DISCORD, YOUTUBE)")
 		return
 	}
-
+	
 	dg, err := discordgo.New("Bot " + cfg.Discord)
 
 	if err != nil {

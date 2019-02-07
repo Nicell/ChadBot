@@ -2,8 +2,8 @@ package structs
 
 // Config holds a config's settings
 type Config struct {
-	Discord string `json:"discord"`
-	Youtube string `json:"youtube"`
+	Discord string
+	Youtube string
 }
 
 // QueueItem holds a song's information

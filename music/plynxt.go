@@ -6,7 +6,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/rylio/ytdl"
 
-	S "chad/structs"
+	S "chadbot/structs"
 )
 
 // PlyNxt plays the next song in the given guild's queue

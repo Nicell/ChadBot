@@ -3,7 +3,7 @@ package music
 import (
 	"github.com/bwmarrin/discordgo"
 
-	S "chad/structs"
+	S "chadbot/structs"
 )
 
 // PlyQ plays the queue of the given guild
